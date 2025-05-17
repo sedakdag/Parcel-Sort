@@ -24,4 +24,12 @@ public class Parcel {
         this.status = status;
     }
 
+    public int getParcelID() {
+        return parcelID;
+    }
+
+    public String getDestinationCity() {
+        return destinationCity;
+    }
+
 }
