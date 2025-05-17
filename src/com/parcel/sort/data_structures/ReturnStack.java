@@ -1,47 +1,50 @@
 package com.parcel.sort.data_structures;
+import com.parcel.sort.entities.Parcel;
 
-public class ReturnStack<T> {
+public class ReturnStack {
 
-    private Node<T> top;
-    private int size;
-
-    private static class Node<T> {
-        T data;
-        Node<T> next;
-        Node(T data) {
-            this.data = data;
+     //each node holds a parcel and points to the next one
+    private static class Node{
+        Parcel parcel;
+        Node next;
+        Node(Parcel parcel){
+            this.parcel = parcel;
         }
-    }
 
-    public void push(T data) {
-        Node<T> node = new Node<>(data);
-        node.next = top;
-        top = node;
+    }
+    private Node top; //top of the stack
+    private int size; //number of parcels
+    //adds parcel to the top
+    public void push(Parcel parcel){
+        Node newNode = new Node(parcel);
+        newNode.next = top;
+        top = newNode;
         size++;
     }
-
-    public T pop() {
-        if (top==null) {
+    //removes and returns the top parcel, null if empty
+    public Parcel pop(){
+        if(top == null){
             return null;
         }
-        T data = top.data;
+        Parcel result = top.parcel;
         top = top.next;
         size--;
-        return data;
+        return result;
     }
-
-    public T peek() {
-        if (top == null) return null;
-        return top.data;
+    //top parcel return
+    public Parcel peek() {
+        if (top == null) {
+            return null;
+        }
+        return top.parcel;
     }
-
-    //Check if the stack is empty
-    public boolean isEmpty() {
+    // checks if empty
+    public boolean isEmpty(){
         return top == null;
     }
-
-    //Return the number of elements
-    public int size() {
+    //returns how many parcels there are
+    public int size(){
         return size;
     }
 }
+
