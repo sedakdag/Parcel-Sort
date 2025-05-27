@@ -67,19 +67,4 @@ public class TerminalRotator {
         } while (temp != current);
         System.out.println("(back to start)");
     }
-
-    // read city list from config.txt
-    public static String[] readCityList() {
-        try (BufferedReader br = new BufferedReader(new FileReader("config.txt"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (line.startsWith("CITY LIST=")) {
-                    return line.split("=")[1].trim().split(", ");
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Error reading city list from config file.");
-        }
-        return new String[] {"Istanbul", "Ankara", "Izmir", "Bursa", "Antalya"}; // default list
-    }
 }

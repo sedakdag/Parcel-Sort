@@ -56,12 +56,12 @@ public class DestinationSorter {
             return size;
         }
 
-        public boolean removeByID(int parcelID) {
+        public boolean removeByID(String parcelID) {
             Node current = front;
             Node previous = null;
 
             while (current != null) {
-                if (current.parcel.getParcelID() == parcelID) {
+                if (current.parcel.getParcelID().equals(parcelID)) {
                     if (previous == null) {
                         front = current.next;
                     } else {
@@ -141,7 +141,7 @@ public class DestinationSorter {
         else return node;
     }
 
-    public boolean removeParcel(String city, int parcelID) {
+    public boolean removeParcel(String city, String parcelID) {
         BSTNode node = findCityNode(root, city);
         if (node != null) {
             return node.parcelQueue.removeByID(parcelID);

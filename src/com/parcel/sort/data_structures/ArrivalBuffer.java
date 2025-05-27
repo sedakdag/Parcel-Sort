@@ -1,5 +1,7 @@
 package com.parcel.sort.data_structures;
 
+import com.parcel.sort.main.ConfigReader;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,6 +12,7 @@ public class ArrivalBuffer {
     private int capacity;
     private int count;
     private int maxSize = 0;
+    private ConfigReader config;
 
     //node class for linked list
     private class Node{
@@ -21,31 +24,15 @@ public class ArrivalBuffer {
             this.record = record;
             this.next = null;
         }
-
     }
 
     // constructor
     public ArrivalBuffer() {
-        this.capacity = readQueueCapacity();
+        this.config = new ConfigReader();
+        this.capacity = config.getQueueCapacity();
         this.front = null;
         this.rear = null;
         this.count = 0;
-    }
-
-    // read queue capacity from config.txt
-    private int readQueueCapacity() {
-        int defaultCapacity = 30;
-        try (BufferedReader br = new BufferedReader(new FileReader("config.txt"))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (line.startsWith("QUEUE CAPACITY=")) {
-                    return Integer.parseInt(line.split("=")[1].trim());
-                }
-            }
-        } catch (IOException e) {
-            System.out.println("Error reading config file. Using default capacity " + defaultCapacity + ".");
-        }
-        return defaultCapacity;
     }
 
     // add parcel to queue
