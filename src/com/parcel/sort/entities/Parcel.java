@@ -51,4 +51,7 @@ public class Parcel {
     public String getDestinationCity() {
         return destinationCity;
     }
+    public int getPriority() {
+        return priority;
+    }
 }
