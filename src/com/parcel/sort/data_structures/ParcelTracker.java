@@ -11,6 +11,8 @@ public class ParcelTracker {
             this.value = value;
         }
     }
+    private int dispatchedCount = 0;
+    private int returnedCount= 0;
     private Node[] table;
     private int capacity;
     public ParcelTracker(int capacity) {
@@ -63,6 +65,14 @@ public class ParcelTracker {
     public void updateStatus(String parcelID, com.parcel.sort.entities.Parcel.Status newStatus, Integer dispatchTime) {
         ParcelRecord record = get(parcelID);
         if (record != null) {
+            if (record.getStatus() != newStatus) {
+                if (newStatus == com.parcel.sort.entities.Parcel.Status.Dispatched) {
+                    dispatchedCount++;
+                }
+                else if (newStatus == com.parcel.sort.entities.Parcel.Status.Returned) {
+                    returnedCount++;
+                }
+            }
             record.setStatus(newStatus);
             if (newStatus == com.parcel.sort.entities.Parcel.Status.Dispatched && dispatchTime != null) {
                 record.setDispatchTime(dispatchTime);
@@ -87,6 +97,13 @@ public class ParcelTracker {
                 current = current.next;
             }
         }
+    }
+
+    public int getDispatchedCount() {
+        return dispatchedCount;
+    }
+    public int getReturnedCount() {
+        return returnedCount;
     }
 
 

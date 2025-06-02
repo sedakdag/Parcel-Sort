@@ -4,7 +4,7 @@ import com.parcel.sort.entities.Parcel;
 
 public class DestinationSorter {
 
-    private class ParcelQueue {
+    public static class ParcelQueue {
         private class Node {
             Parcel parcel;
             Node next;
