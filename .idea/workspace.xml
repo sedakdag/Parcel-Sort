@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ca5582fb-6485-4413-a005-ccca912e002e" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/parcel/sort/entities/Parcel.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/parcel/sort/entities/Parcel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/com/parcel/sort/main/Logger.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/parcel/sort/main/Logger.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/com/parcel/sort/main/SimulationManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/com/parcel/sort/main/SimulationManager.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,8 +50,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9f38398b9061-39b83d9b5494-intellij.indexing.shared.core-IU-241.18034.62" />
-        <option value="bundled-js-predefined-1d06a55b98c1-0b3e54e931b4-JavaScript-IU-241.18034.62" />
+        <option value="bundled-jdk-9823dce3aa75-a94e463ab2e7-intellij.indexing.shared.core-IU-243.26053.27" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-IU-243.26053.27" />
       </set>
     </attachedChunks>
   </component>
@@ -69,6 +67,7 @@
       <workItem from="1748288525123" duration="13514000" />
       <workItem from="1748343317181" duration="1545000" />
       <workItem from="1748780618923" duration="10765000" />
+      <workItem from="1748868593617" duration="248000" />
     </task>
     <servers />
   </component>

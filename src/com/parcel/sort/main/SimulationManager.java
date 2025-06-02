@@ -31,7 +31,7 @@ public class SimulationManager {
         this.parcelTracker = new ParcelTracker(configReader.getQueueCapacity());
         this.parcelRecord = new ParcelRecord(parcelRecord.getArrivalTime());
         this.terminalRotator = new TerminalRotator(configReader.getCityList());
-        this.logger = new Logger();
+        this.logger = new Logger("report.txt");
         this.reportGenerator = new ReportGenerator();
         this.random = new Random();
         this.currentTick = 0;
