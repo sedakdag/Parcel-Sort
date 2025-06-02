@@ -16,7 +16,6 @@ public class SimulationManager {
     private ReturnStack returnStack;
     private DestinationSorter destinationSorter;
     private ParcelTracker parcelTracker;
-    private ParcelRecord parcelRecord;
     private TerminalRotator terminalRotator;
     private Logger logger;
     private ReportGenerator reportGenerator;
@@ -29,7 +28,6 @@ public class SimulationManager {
         this.returnStack = new ReturnStack();
         this.destinationSorter = new DestinationSorter();
         this.parcelTracker = new ParcelTracker(configReader.getQueueCapacity());
-        this.parcelRecord = new ParcelRecord(parcelRecord.getArrivalTime());
         this.terminalRotator = new TerminalRotator(configReader.getCityList());
         this.logger = new Logger("report.txt");
         this.reportGenerator = new ReportGenerator();
@@ -41,16 +39,31 @@ public class SimulationManager {
     private void generateParcels() {
         int minParcels = configReader.getParcelPerTickMin();
         int maxParcels = configReader.getParcelPerTickMax();
-        int parcelsPerTick = random.nextInt(minParcels, maxParcels);
+        int parcelsPerTick = random.nextInt(maxParcels - minParcels + 1) + minParcels;
 
         for (int i = 0; i < parcelsPerTick; i++) {
             Parcel parcel = Parcel.generateRandomParcel(currentTick, configReader.getCityList());
-            arrivalBuffer.enqueue(parcel, currentTick);
-            parcelTracker.insert(parcel.getParcelID(), parcelRecord);
-            //loglanacak
 
+            // create corresponding record
+            ParcelRecord record = new ParcelRecord(
+                    parcel.getParcelID(),
+                    currentTick,
+                    parcel.getDestinationCity(),
+                    parcel.getPriority(),
+                    parcel.getSize()
+            );
+
+            // enqueue and track
+            arrivalBuffer.enqueue(parcel, currentTick);
+            parcelTracker.insert(parcel.getParcelID(), record);
+
+            // log arrival
+            logger.logParcelArrival(parcel);
         }
+
+        logger.logQueueSize(arrivalBuffer.size());
     }
+
 
     //queue processing
 

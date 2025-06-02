@@ -6,7 +6,7 @@ public class ParcelRecord {
     private String parcelID;
     private String destinationCity;
     private int priority;
-    private String size;
+    private Parcel.Size size;
     private int arrivalTime;
     private int dispatchTime;
     private int returnCount;
@@ -17,7 +17,7 @@ public class ParcelRecord {
         this.returnCount = 0;
         this.status = Parcel.Status.InQueue;
     }
-    public ParcelRecord(String parcelID, int arrivalTime, String destinationCity, int priority, String size) {
+    public ParcelRecord(String parcelID, int arrivalTime, String destinationCity, int priority, Parcel.Size size) {
         this.parcelID = parcelID;
         this.arrivalTime = arrivalTime;
         this.destinationCity = destinationCity;
@@ -66,7 +66,7 @@ public class ParcelRecord {
         return priority;
     }
 
-    public String getSize() {
+    public Parcel.Size getSize() {
         return size;
     }
 

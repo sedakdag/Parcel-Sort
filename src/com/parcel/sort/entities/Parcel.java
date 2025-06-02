@@ -3,47 +3,43 @@ package com.parcel.sort.entities;
 import java.util.Random;
 
 public class Parcel {
-    private static int idCounter = 100; // to generate unique id
+    private static int idCounter = 100; // unique ID counter for all parcels
 
-    private static String parcelID; // unique id
-    private static String destinationCity;
-    private static int priority;
+    private String parcelID;
+    private String destinationCity;
+    private int priority;
     private int arrivalTick;
+    private Status status;
+    private Size size;
 
-
-    // enum for parcel status
     public enum Status {
         InQueue, Sorted, Dispatched, Returned
     }
-
-    private Status status;
 
     public enum Size {
         Small, Medium, Large
     }
 
-    private static Size size;
-
-    // constructors
     public Parcel(String parcelID, String destinationCity, int priority, Size size, int arrivalTick, Status status) {
         this.parcelID = parcelID;
         this.destinationCity = destinationCity;
         this.priority = priority;
         this.arrivalTick = arrivalTick;
         this.status = status;
+        this.size = size;
     }
 
     public static Parcel generateRandomParcel(int currentTick, String[] cityList) {
         Random random = new Random();
+        String id = "P" + idCounter++;
+        String city = cityList[random.nextInt(cityList.length)];
+        int pr = random.nextInt(3) + 1;
+        Size sz = Size.values()[random.nextInt(Size.values().length)];
 
-        parcelID = "P" + idCounter++;
-        destinationCity = cityList[random.nextInt(cityList.length)];
-        priority = random.nextInt(3) + 1; // 1, 2, 3
-        size = Size.values()[random.nextInt(Size.values().length)];
-
-        return new Parcel(parcelID ,destinationCity, priority, size, currentTick, Status.InQueue);
+        return new Parcel(id, city, pr, sz, currentTick, Status.InQueue);
     }
 
+    // Getter methods
     public String getParcelID() {
         return parcelID;
     }
@@ -51,7 +47,24 @@ public class Parcel {
     public String getDestinationCity() {
         return destinationCity;
     }
+
     public int getPriority() {
         return priority;
+    }
+
+    public int getArrivalTick() {
+        return arrivalTick;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public Size getSize() {
+        return size;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }
