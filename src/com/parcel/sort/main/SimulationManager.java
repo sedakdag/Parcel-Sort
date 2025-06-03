@@ -11,7 +11,8 @@ import java.util.Random;
 public class SimulationManager {
 
     //tick initalization
-    private int currentTick;
+    public int currentTick;
+    public int generatedParcels;
     private ConfigReader configReader;
     private ArrivalBuffer arrivalBuffer;
     private ReturnStack returnStack;
@@ -36,6 +37,7 @@ public class SimulationManager {
         this.random = new Random();
         this.currentTick = 0;
         this.reprocessInterval = 3;
+        this.generatedParcels = 0;
     }
 
     //parcel generation
@@ -55,6 +57,7 @@ public class SimulationManager {
                     parcel.getPriority(),
                     parcel.getSize()
             );
+            generatedParcels++;
 
             // enqueue and track
             arrivalBuffer.enqueue(parcel, currentTick);
