@@ -1,14 +1,20 @@
 package com.parcel.sort.utils;
 
-import com.parcel.sort.data_structures.ParcelTracker;
-import com.parcel.sort.data_structures.DestinationSorter;
+import com.parcel.sort.data_structures.*;
 import com.parcel.sort.model.ParcelRecord;
 import com.parcel.sort.entities.Parcel;
+import com.parcel.sort.main.SimulationManager;
+
+import java.util.ArrayList;
+
 
 public class ReportGenerator {
 
     private ParcelTracker parcelTracker;
     private DestinationSorter destinationSorter;
+    private SimulationManager simulationManager;
+    private ArrivalBuffer arrivalBuffer;
+    private ReturnStack returnStack;
 
     public ReportGenerator(ParcelTracker parcelTracker, DestinationSorter destinationSorter) {
         this.parcelTracker = parcelTracker;
@@ -23,39 +29,19 @@ public class ReportGenerator {
         String maxWaitParcelID = null;
 
 
-        for (int i = 0; i < parcelTracker.getCapacity(); i++) {
-            var node = parcelTracker.getTable()[i];
-            while (node!= null){
-                totalParcels++;
-                ParcelRecord record = node.value;
-
-                if (record.getStatus() == Parcel.Status.Dispatched && record.getDispatchTime() != null) {
-                    dispatchedCount++;
-
-                    int wait = record.getDispatchTime() - record.getArrivalTime();
-                    totalWaitTime += wait;
-
-                    if (maxWaitTime < wait) {
-                        maxWaitTime = wait;
-                        maxWaitParcelID = node.key;
-                    }
-
-                }
-
-                node = node.next;
-            }
-        }
-
-        double avgWaitTime = dispatchedCount > 0 ? totalWaitTime / dispatchedCount : 0;
 
         System.out.println("=== Final Report ===");
         System.out.println("== Simulation Overview ==");
-        System.out.println("=> Total Ticks Executed:");
-        System.out.println("=> Number of Parcels Generated:");
+        System.out.println("=> Total Ticks Executed:" + simulationManager.currentTick);
+        System.out.println("=> Number of Parcels Generated:" + simulationManager.generatedParcels);
         System.out.println("== Parcel Statistics ==");
-        System.out.println("=> Total Dispatched Parcels:");
-        System.out.println("=> Total Returned Parcels:");
+        System.out.println("=> Total Dispatched Parcels:" + dispatchedCount);
+        System.out.println("=> Total Returned Parcels:" + parcelTracker.getReturnedCount());
         System.out.println("=> Number of Parcels Still in Queue/BST/Stack at End:");
+        System.out.println(">In Queue (BST): " + destinationSorter.getNodeCount());
+        System.out.println(">In Return Stack: " + returnStack.size());
+        int totalRemaining = destinationSorter.getNodeCount() + returnStack.size();
+        System.out.println(">Total Remaining: " + totalRemaining);
         System.out.println("== Destination Metrics ==");
         System.out.println("=> Number of Parcels per City:");
         System.out.println("=> Most Frequently Targeted Destination:");
