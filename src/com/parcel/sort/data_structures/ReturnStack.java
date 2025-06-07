@@ -14,12 +14,18 @@ public class ReturnStack {
     }
     private Node top; //top of the stack
     private int size; //number of parcels
+    private int maxSize = 0;
+
     //adds parcel to the top
     public void push(Parcel parcel){
         Node newNode = new Node(parcel);
         newNode.next = top;
         top = newNode;
         size++;
+
+        if (size > maxSize) {
+            maxSize = size;
+        }
     }
     //removes and returns the top parcel, null if empty
     public Parcel pop(){
@@ -45,6 +51,10 @@ public class ReturnStack {
     //returns how many parcels there are
     public int size(){
         return size;
+    }
+
+    public int getMaxSize() {
+        return maxSize;
     }
 }
 

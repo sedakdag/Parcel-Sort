@@ -14,10 +14,12 @@ public class ParcelTracker {
     private int dispatchedCount = 0;
     private int returnedCount= 0;
     private Node[] table;
-    private int capacity;
+    private  int capacity;
+    private  int size;
     public ParcelTracker(int capacity) {
         this.capacity = capacity;
         this.table = new Node[capacity];
+        this.size = 0;
     }
     private int hash(String key) {
         int hash = 0;
@@ -45,6 +47,7 @@ public class ParcelTracker {
         Node newNode = new Node(parcelID, record);
         newNode.next = table[index];
         table[index] = newNode;
+        size++;
     }
 
 
@@ -68,6 +71,7 @@ public class ParcelTracker {
             if (record.getStatus() != newStatus) {
                 if (newStatus == com.parcel.sort.entities.Parcel.Status.Dispatched) {
                     dispatchedCount++;
+
                 }
                 else if (newStatus == com.parcel.sort.entities.Parcel.Status.Returned) {
                     returnedCount++;
@@ -99,12 +103,45 @@ public class ParcelTracker {
         }
     }
 
+    public double getAverageProcessingTime() {
+        int totalTime = 0;
+        int count = 0;
+
+        for (int i = 0; i < capacity; i++) {
+            Node current = table[i];
+            while (current != null) {
+                ParcelRecord record = current.value;
+                if (record.getStatus() == com.parcel.sort.entities.Parcel.Status.Dispatched &&
+                        record.getDispatchTime() > 0) {
+                    totalTime += (record.getDispatchTime() - record.getArrivalTime());
+                    count++;
+                }
+                current = current.next;
+            }
+        }
+
+        if (count == 0){
+            return 0;
+        }
+        else {
+            return totalTime / count;
+        }
+    }
+
+
     public int getDispatchedCount() {
         return dispatchedCount;
     }
     public int getReturnedCount() {
         return returnedCount;
     }
+    public int getSize() {
+        return size;
+    }
+    public int getCapacity() {
+        return capacity;
+    }
+
 
 
 }
