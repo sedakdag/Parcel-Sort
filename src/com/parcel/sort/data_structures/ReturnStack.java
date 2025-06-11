@@ -16,6 +16,12 @@ public class ReturnStack {
     private int size; //number of parcels
     private int maxSize = 0;
 
+    // constructor
+    public ReturnStack() {
+        this.top = null;
+        this.size = 0;
+    }
+
     //adds parcel to the top
     public void push(Parcel parcel){
         Node newNode = new Node(parcel);

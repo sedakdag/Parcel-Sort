@@ -8,15 +8,9 @@ public class ParcelRecord {
     private int priority;
     private Parcel.Size size;
     private int arrivalTime;
-    private int dispatchTime;
+    private Integer dispatchTime;
     private int returnCount;
     private Parcel.Status status;
-
-    public ParcelRecord(int arrivalTime) {
-        this.arrivalTime = arrivalTime;
-        this.returnCount = 0;
-        this.status = Parcel.Status.InQueue;
-    }
     public ParcelRecord(String parcelID, int arrivalTime, String destinationCity, int priority, Parcel.Size size) {
         this.parcelID = parcelID;
         this.arrivalTime = arrivalTime;
@@ -25,6 +19,7 @@ public class ParcelRecord {
         this.size = size;
         this.returnCount = 0;
         this.status = Parcel.Status.InQueue;
+        this.dispatchTime = null;
     }
 
     public int getArrivalTime() {

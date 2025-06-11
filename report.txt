@@ -1,0 +1,22 @@
+=== Final Report ===
+
+== Simulation Overview ==
+=> Total Ticks Executed:5
+=> Number of Parcels Generated:10
+
+== Parcel Statistics ==
+=> Total Dispatched Parcels:3
+=> Total Returned Parcels:2
+=> Number of Parcels Still in Queue/BST/Stack at End:
+>In Queue (BST): 5
+>In Return Stack: 0
+>Total Remaining: 5
+
+== Destination Metrics ==
+=> Number of Parcels per City:
+>Parcels in Ankara: 1
+>Parcels in Istanbul: 1
+>Parcels in Izmir: 1
+>Parcels in Bursa: 1
+>Parcels in Antalya: 3
+=> Most Frequently Targeted Destination

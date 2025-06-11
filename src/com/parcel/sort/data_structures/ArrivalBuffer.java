@@ -1,10 +1,7 @@
 package com.parcel.sort.data_structures;
 
+import com.parcel.sort.entities.Parcel;
 import com.parcel.sort.main.ConfigReader;
-
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
 
 public class ArrivalBuffer {
     private Node front;
@@ -16,12 +13,10 @@ public class ArrivalBuffer {
 
     //node class for linked list
     private class Node{
-        com.parcel.sort.entities.Parcel parcel;
-        com.parcel.sort.model.ParcelRecord record;
+        Parcel parcel;
         Node next;
-        Node(com.parcel.sort.entities.Parcel parcel, com.parcel.sort.model.ParcelRecord record){
+        Node(Parcel parcel) {
             this.parcel = parcel;
-            this.record = record;
             this.next = null;
         }
     }
@@ -41,8 +36,7 @@ public class ArrivalBuffer {
             System.out.println("Capacity is full! Parcel discarded: ID:" + parcel.getParcelID() + ", Destination:" + parcel.getDestinationCity());
             return;
         }
-        com.parcel.sort.model.ParcelRecord record = new com.parcel.sort.model.ParcelRecord(currentTick);
-        Node newNode = new Node(parcel, record);
+        Node newNode = new Node(parcel);
         if(rear == null){
             front = rear = newNode;
         }
@@ -51,15 +45,12 @@ public class ArrivalBuffer {
             rear = newNode;
         }
         count++;
-        System.out.println("Enqueued: " + parcel);
-        System.out.println("Queue size: " + count);
         maxSize = Math.max(maxSize, count);
     }
 
     // remove parcel from queue
     public com.parcel.sort.entities.Parcel dequeue(){
         if (isEmpty()) {
-            System.out.println("Queue is empty!");
             return null;
         }
         com.parcel.sort.entities.Parcel parcel = front.parcel;
@@ -68,8 +59,6 @@ public class ArrivalBuffer {
             rear = null;
         }
         count--;
-        System.out.println("Dequeued: " + parcel);
-        System.out.println("Queue size: " + count);
         return parcel;
     }
 
@@ -84,9 +73,8 @@ public class ArrivalBuffer {
     }
 
     // peek front parcel
-    public com.parcel.sort.entities.Parcel peek() {
+    public Parcel peek() {
         if (isEmpty()) {
-            System.out.println("Queue is empty!");
             return null;
         }
         return front.parcel;

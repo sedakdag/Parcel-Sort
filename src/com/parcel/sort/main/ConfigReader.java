@@ -69,4 +69,5 @@ public class ConfigReader {
     public String[] getCityList() {
         return cityList;
     }
+
 }

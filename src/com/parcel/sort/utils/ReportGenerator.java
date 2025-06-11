@@ -5,6 +5,10 @@ import com.parcel.sort.model.ParcelRecord;
 import com.parcel.sort.entities.Parcel;
 import com.parcel.sort.main.SimulationManager;
 
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+
 public class ReportGenerator {
 
     private ParcelTracker parcelTracker;
@@ -12,60 +16,83 @@ public class ReportGenerator {
     private SimulationManager simulationManager;
     private ArrivalBuffer arrivalBuffer;
     private ReturnStack returnStack;
-    private ParcelRecord parcelRecord;
+    private PrintWriter reportWriter;
 
-    public ReportGenerator(ParcelTracker parcelTracker, DestinationSorter destinationSorter) {
+    public ReportGenerator(ParcelTracker parcelTracker, DestinationSorter destinationSorter,
+                           SimulationManager simulationManager, ArrivalBuffer arrivalBuffer, ReturnStack returnStack) {
         this.parcelTracker = parcelTracker;
         this.destinationSorter = destinationSorter;
         this.simulationManager = simulationManager;
         this.arrivalBuffer = arrivalBuffer;
         this.returnStack = returnStack;
-        this.parcelRecord = parcelRecord;
+        // initialize report writer for report.txt
+        try {
+            reportWriter = new PrintWriter(new FileWriter("report.txt", false)); // overwrite (false)
+        } catch (IOException e) {
+            System.err.println("ERROR: Could not create report file 'report.txt'. Report will only be printed to console.");
+            reportWriter = null; // set to null if file creation fails
+        }
+    }
+
+    // helper method to print to console and report file
+    private void printReportLine(String line) {
+        if (reportWriter != null) {
+            reportWriter.println(line);
+        }
     }
 
     public void generateReport() {
-        int totalParcels = 0;
-        int dispatchedCount = 0;
-        int totalWaitTime = 0;
-        int maxWaitTime = -1;
-        String maxWaitParcelID = null;
-
         int totalRemaining = destinationSorter.getNodeCount() + returnStack.size();
 
-
+        ParcelRecord longestDelayParcel = parcelTracker.getParcelWithLongestDelay();
+        int dispatchedCount = parcelTracker.getDispatchedCount();
+        int parcelsReturnedMoreThanOnce = parcelTracker.getParcelsReturnedMoreThanOnceCount();
         int numberOfEntries = parcelTracker.getSize();
         int numberOfBuckets = parcelTracker.getCapacity();
         double loadFactor = (double) numberOfEntries / numberOfBuckets;
 
 
-        System.out.println("=== Final Report ===");
-        System.out.println("== Simulation Overview ==");
-        System.out.println("=> Total Ticks Executed:" + simulationManager.currentTick);
-        System.out.println("=> Number of Parcels Generated:" + simulationManager.generatedParcels);
-        System.out.println("== Parcel Statistics ==");
-        System.out.println("=> Total Dispatched Parcels:" + dispatchedCount);
-        System.out.println("=> Total Returned Parcels:" + parcelTracker.getReturnedCount());
-        System.out.println("=> Number of Parcels Still in Queue/BST/Stack at End:");
-        System.out.println(">In Queue (BST): " + destinationSorter.getNodeCount());
-        System.out.println(">In Return Stack: " + returnStack.size());
-        System.out.println(">Total Remaining: " + totalRemaining);
-        System.out.println("== Destination Metrics ==");
-        System.out.println("=> Number of Parcels per City:");
-        System.out.println(">Parcels in Ankara: " + destinationSorter.countCityParcels("Ankara"));
-        System.out.println(">Parcels in Istanbul: " + destinationSorter.countCityParcels("Istanbul"));
-        System.out.println(">Parcels in Izmir: " + destinationSorter.countCityParcels("Izmir"));
-        System.out.println(">Parcels in Bursa: " + destinationSorter.countCityParcels("Bursa"));
-        System.out.println(">Parcels in Antalya: " + destinationSorter.countCityParcels("Antalya"));
-        System.out.println("=> Most Frequently Targeted Destination:" + destinationSorter.getCityWithMostParcels());
-        System.out.println("== Timing and Delay Metrics==");
-        System.out.println("=> Average Parcel Processing Time:" + parcelTracker.getAverageProcessingTime());
-        System.out.println("=> Parcel With Longest Delay:");
-        System.out.println("=> Number of Parcels Returned More Than Once:");
-        System.out.println("=== Data Structure Statistics ===");
-        System.out.println("=>  Maximum Queue Size Observed" + arrivalBuffer.getMaxSize());
-        System.out.println("=>  Maximum Stack Size Observed" + returnStack.getMaxSize());
-        System.out.println("=>  Final Height of BST" + destinationSorter.getHeight());
-        System.out.println("=>  Hash Table Load Factor" + loadFactor);
+        printReportLine("=== Final Report ===");
+        printReportLine("\n== Simulation Overview ==");
+        printReportLine("=> Total Ticks Executed:" + simulationManager.currentTick);
+        printReportLine("=> Number of Parcels Generated:" + simulationManager.generatedParcels);
+
+        printReportLine("\n== Parcel Statistics ==");
+        printReportLine("=> Total Dispatched Parcels:" + dispatchedCount);
+        printReportLine("=> Total Returned Parcels:" + parcelTracker.getReturnedCount());
+        printReportLine("=> Number of Parcels Still in Queue/BST/Stack at End:");
+        printReportLine(">In Queue (BST): " + destinationSorter.getNodeCount());
+        printReportLine(">In Return Stack: " + returnStack.size());
+        printReportLine(">Total Remaining: " + totalRemaining);
+
+        printReportLine("\n== Destination Metrics ==");
+        printReportLine("=> Number of Parcels per City:");
+        printReportLine(">Parcels in Ankara: " + destinationSorter.countCityParcels("Ankara"));
+        printReportLine(">Parcels in Istanbul: " + destinationSorter.countCityParcels("Istanbul"));
+        printReportLine(">Parcels in Izmir: " + destinationSorter.countCityParcels("Izmir"));
+        printReportLine(">Parcels in Bursa: " + destinationSorter.countCityParcels("Bursa"));
+        printReportLine(">Parcels in Antalya: " + destinationSorter.countCityParcels("Antalya"));
+        printReportLine("=> Most Frequently Targeted Destination:" + destinationSorter.getCityWithMostParcels());
+
+        printReportLine("\n== Timing and Delay Metrics==");
+        printReportLine("=> Average Parcel Processing Time:" + parcelTracker.getAverageProcessingTime());
+        printReportLine("=> Parcel With Longest Delay: " + (longestDelayParcel != null ? longestDelayParcel.getParcelID() + " (Delay: " + (longestDelayParcel.getDispatchTime() - longestDelayParcel.getArrivalTime()) + " ticks)" : "N/A"));
+        printReportLine("=> Number of Parcels Returned More Than Once: " + parcelsReturnedMoreThanOnce);
+
+        printReportLine("\n=== Data Structure Statistics ===");
+        printReportLine("=>  Maximum Queue Size Observed: " + arrivalBuffer.getMaxSize());
+        printReportLine("=>  Maximum Stack Size Observed: " + returnStack.getMaxSize());
+        printReportLine("=>  Final Height of BST" + destinationSorter.getHeight());
+        printReportLine("=>  Hash Table Load Factor" + String.format("%.2f", loadFactor));
+        printReportLine("==================================");
+
+        // close the report writer to ensure all content is written to the file
+        if (reportWriter != null) {
+            reportWriter.flush();
+            reportWriter.close();
+            reportWriter = null; // Set to null after closing
+            System.out.println("\nReport saved to report.txt");
+        }
 
     }
 

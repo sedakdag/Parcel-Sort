@@ -11,7 +11,7 @@ public class Logger {
 
     public Logger(String fileName){
         try {
-            writer = new PrintWriter(new FileWriter(fileName, true)); // true = append mode
+            writer = new PrintWriter(new FileWriter(fileName, false)); // true = append mode
         } catch (IOException e) {
             System.out.println("Could not create log file.");
             e.printStackTrace(); // Print error details
@@ -85,6 +85,7 @@ public class Logger {
     public void close() {
         if (writer != null) {
             writer.close(); // Close file when done
+            writer = null;
         }
     }
 }

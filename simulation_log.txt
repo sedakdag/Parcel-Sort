@@ -1,0 +1,45 @@
+Rotated to: Initial Active Terminal: Istanbul
+
+[Tick #0]: 
+New Parcel: P100 to Istanbul (Priority: 1)
+New Parcel: P101 to Antalya (Priority: 3)
+New Parcel: P102 to Ankara (Priority: 1)
+Queue Size: 3
+Sorted to BST: P100
+Sorted to BST: P101
+Sorted to BST: P102
+Dispatched: P100 from BST to Istanbul -> SUCCESS
+
+[Tick #1]: 
+New Parcel: P103 to Istanbul (Priority: 1)
+New Parcel: P104 to Izmir (Priority: 1)
+Queue Size: 2
+Sorted to BST: P103
+Sorted to BST: P104
+Dispatched: P103 from BST to Istanbul -> SUCCESS
+
+[Tick #2]: 
+New Parcel: P105 to Istanbul (Priority: 2)
+Queue Size: 1
+Sorted to BST: P105
+Returned: P105 misrouted -> RETURNED to Stack (ReturnCount: 1)
+Rotated to: Ankara
+
+[Tick #3]: 
+New Parcel: P106 to Antalya (Priority: 3)
+Queue Size: 1
+Sorted to BST: P106
+Returned: P102 misrouted -> RETURNED to Stack (ReturnCount: 1)
+Returned: P102 misrouted -> RETURNED to Stack (ReturnCount: 0)
+Returned: P105 misrouted -> RETURNED to Stack (ReturnCount: 1)
+
+[Tick #4]: 
+New Parcel: P107 to Ankara (Priority: 2)
+New Parcel: P108 to Bursa (Priority: 3)
+New Parcel: P109 to Antalya (Priority: 3)
+Queue Size: 3
+Sorted to BST: P107
+Sorted to BST: P108
+Sorted to BST: P109
+Dispatched: P102 from BST to Ankara -> SUCCESS
+Rotated to: Izmir

@@ -1,11 +1,10 @@
 package com.parcel.sort.data_structures;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import com.parcel.sort.main.Logger;
 
 public class TerminalRotator {
     private Node current;
+    private Logger logger;
 
     // node class for circular linked list
     private class Node {
@@ -18,7 +17,8 @@ public class TerminalRotator {
     }
 
     // constructor
-    public TerminalRotator(String[] cityList) {
+    public TerminalRotator(String[] cityList, Logger logger) {
+        this.logger = logger;
         if (cityList.length == 0) {
             throw new IllegalArgumentException("City list cannot be empty.");
         }
@@ -36,23 +36,21 @@ public class TerminalRotator {
         }
         prev.next = first; // complete the circle
         current = first;
+        logger.logTerminalChange("Initial Active Terminal: " + current.cityName); //log initial terminal
     }
 
     // advance to the next terminal
     public void advanceTerminal() {
         if (current != null) {
             current = current.next;
-            System.out.println("Rotated to: " + current.cityName);
         }
     }
 
     // get the current active terminal
     public String getActiveTerminal() {
         if (current != null) {
-            System.out.println("Current city: ");
             return current.cityName;
         } else {
-            System.out.println("There is no current city.");
             return null;
         }
     }
@@ -61,10 +59,14 @@ public class TerminalRotator {
     public void printTerminalOrder() {
         if (current == null) return;
         Node temp = current;
+        StringBuilder sb = new StringBuilder("Terminal Order: ");
         do {
-            System.out.print(temp.cityName + " -> ");
+            sb.append(temp.cityName);
+            if (temp.next != current) {
+                sb.append(" -> ");
+            }
             temp = temp.next;
         } while (temp != current);
-        System.out.println("(back to start)");
+        sb.append(" (back to start)");
     }
 }

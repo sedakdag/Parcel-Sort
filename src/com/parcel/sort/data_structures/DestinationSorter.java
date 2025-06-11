@@ -84,7 +84,7 @@ public class DestinationSorter {
         public void printAll() {
             Node current = front;
             while (current != null) {
-                System.out.println("Parcel ID: " + current.parcel.getParcelID());
+                System.out.println("  - Parcel ID: " + current.parcel.getParcelID());
                 current = current.next;
             }
         }
@@ -194,8 +194,6 @@ public class DestinationSorter {
         return h;
     }
 
-
-
     private class CityCount {
         String city;
         int count;
@@ -222,6 +220,19 @@ public class DestinationSorter {
         CityCount max = new CityCount(null, 0);
         max = findCityWithMostParcels(root, max);
         return max.city;
+    }
+
+    private int countParcelsInQueuesRecursive(BSTNode node) {
+        if (node == null) {
+            return 0;
+        }
+        return node.parcelQueue.getSize() +
+                countParcelsInQueuesRecursive(node.left) +
+                countParcelsInQueuesRecursive(node.right);
+    }
+
+    public int getTotalParcelsInAllQueues() {
+        return countParcelsInQueuesRecursive(root);
     }
 
 }

@@ -1,4 +1,5 @@
 package com.parcel.sort.data_structures;
+import com.parcel.sort.entities.Parcel;
 import com.parcel.sort.model.ParcelRecord;
 //tek tek anlayıp açıklayacağım relax takıl babaaaa
 public class ParcelTracker {
@@ -26,7 +27,7 @@ public class ParcelTracker {
         for (int i = 0; i < key.length(); i++) {
             hash += key.charAt(i) * (i + 1);
         }
-        return hash % capacity;
+        return Math.abs(hash) % capacity;
     }
     public boolean exists(String parcelID) {
         return get(parcelID) != null;
@@ -39,7 +40,11 @@ public class ParcelTracker {
 
 
         while (current != null) {
-            if (current.key.equals(parcelID)) return;
+            if (current.key.equals(parcelID)) {
+                current.value = record;
+                return;
+            }
+
             current = current.next;
         }
 
@@ -65,20 +70,20 @@ public class ParcelTracker {
         return null;
     }
 
-    public void updateStatus(String parcelID, com.parcel.sort.entities.Parcel.Status newStatus, Integer dispatchTime) {
+    public void updateStatus(String parcelID, Parcel.Status newStatus, Integer dispatchTime) {
         ParcelRecord record = get(parcelID);
         if (record != null) {
             if (record.getStatus() != newStatus) {
-                if (newStatus == com.parcel.sort.entities.Parcel.Status.Dispatched) {
+                if (newStatus == Parcel.Status.Dispatched) {
                     dispatchedCount++;
 
                 }
-                else if (newStatus == com.parcel.sort.entities.Parcel.Status.Returned) {
+                else if (newStatus == Parcel.Status.Returned) {
                     returnedCount++;
                 }
             }
             record.setStatus(newStatus);
-            if (newStatus == com.parcel.sort.entities.Parcel.Status.Dispatched && dispatchTime != null) {
+            if (newStatus == Parcel.Status.Dispatched && dispatchTime != null) {
                 record.setDispatchTime(dispatchTime);
             }
         }
@@ -111,7 +116,7 @@ public class ParcelTracker {
             Node current = table[i];
             while (current != null) {
                 ParcelRecord record = current.value;
-                if (record.getStatus() == com.parcel.sort.entities.Parcel.Status.Dispatched &&
+                if (record.getStatus() == Parcel.Status.Dispatched &&
                         record.getDispatchTime() > 0) {
                     totalTime += (record.getDispatchTime() - record.getArrivalTime());
                     count++;
@@ -121,13 +126,51 @@ public class ParcelTracker {
         }
 
         if (count == 0){
-            return 0;
+            return 0.0;
         }
         else {
-            return totalTime / count;
+            return (double) totalTime / count;
         }
     }
 
+    // finds the parcel record with the longest processing delay
+    public ParcelRecord getParcelWithLongestDelay() {
+        ParcelRecord longestDelayParcel = null;
+        int maxDelay = -1; // initialize with a value that any valid delay will exceed
+
+        for (int i = 0; i < capacity; i++) {
+            Node current = table[i];
+            while (current != null) {
+                ParcelRecord record = current.value;
+                // only consider dispatched parcels with valid dispatch times
+                if (record.getStatus() == Parcel.Status.Dispatched &&
+                        record.getDispatchTime() > 0) {
+                    int currentDelay = record.getDispatchTime() - record.getArrivalTime();
+                    if (currentDelay > maxDelay) {
+                        maxDelay = currentDelay;
+                        longestDelayParcel = record;
+                    }
+                }
+                current = current.next;
+            }
+        }
+        return longestDelayParcel;
+    }
+
+    // counts parcels that have been returned more than once
+    public int getParcelsReturnedMoreThanOnceCount() {
+        int count = 0;
+        for (int i = 0; i < capacity; i++) {
+            Node current = table[i];
+            while (current != null) {
+                if (current.value.getReturnCount() > 1) { // check if return count is greater than 1
+                    count++;
+                }
+                current = current.next;
+            }
+        }
+        return count;
+    }
 
     public int getDispatchedCount() {
         return dispatchedCount;
@@ -142,6 +185,16 @@ public class ParcelTracker {
         return capacity;
     }
 
-
-
+    // returns a collection of all parcel records for report generation
+    public java.util.Collection<ParcelRecord> getAllRecords() {
+        java.util.List<ParcelRecord> allRecords = new java.util.ArrayList<>();
+        for (int i = 0; i < capacity; i++) {
+            Node current = table[i];
+            while (current != null) {
+                allRecords.add(current.value);
+                current = current.next;
+            }
+        }
+        return allRecords;
+    }
 }

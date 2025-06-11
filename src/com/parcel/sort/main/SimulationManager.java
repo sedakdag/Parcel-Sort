@@ -13,6 +13,8 @@ public class SimulationManager {
     //tick initalization
     public int currentTick;
     public int generatedParcels;
+
+    //all components
     private ConfigReader configReader;
     private ArrivalBuffer arrivalBuffer;
     private ReturnStack returnStack;
@@ -27,23 +29,29 @@ public class SimulationManager {
 
     public SimulationManager() {
         this.configReader = new ConfigReader();
+        this.logger = new Logger("simulation_log.txt");
         this.arrivalBuffer = new ArrivalBuffer();
         this.returnStack = new ReturnStack();
         this.destinationSorter = new DestinationSorter();
         this.parcelTracker = new ParcelTracker(configReader.getQueueCapacity());
-        this.terminalRotator = new TerminalRotator(configReader.getCityList());
-        this.logger = new Logger("report.txt");
-        this.reportGenerator = new ReportGenerator( parcelTracker, destinationSorter);
+        this.terminalRotator = new TerminalRotator(configReader.getCityList(), this.logger);
         this.random = new Random();
         this.currentTick = 0;
         this.reprocessInterval = 3;
         this.generatedParcels = 0;
+        this.reportGenerator = new ReportGenerator(parcelTracker, destinationSorter, this, arrivalBuffer, returnStack);
     }
 
     //parcel generation
-    private void generateParcels() {
+    public void generateParcels() {
         int minParcels = configReader.getParcelPerTickMin();
         int maxParcels = configReader.getParcelPerTickMax();
+
+        // ensure maxParcels is not less than minParcels
+        if (maxParcels < minParcels) {
+            maxParcels = minParcels;
+        }
+
         int parcelsPerTick = random.nextInt(maxParcels - minParcels + 1) + minParcels;
 
         for (int i = 0; i < parcelsPerTick; i++) {
@@ -72,19 +80,19 @@ public class SimulationManager {
 
 
     //queue processing
-
-    private void sortParcels(){
+    public void sortParcels(){
         while (!arrivalBuffer.isEmpty()) {
             Parcel parcel = arrivalBuffer.dequeue();
-            destinationSorter.insertParcel(parcel);
-            parcelTracker.updateStatus(parcel.getParcelID(), Parcel.Status.Sorted, null);
-            logger.logBSTInsertion(parcel);
+            if(parcel != null){
+                destinationSorter.insertParcel(parcel);
+                parcelTracker.updateStatus(parcel.getParcelID(), Parcel.Status.Sorted, null);
+                logger.logBSTInsertion(parcel);
+            }
         }
     }
 
     //dispatch evaluation
-
-    private void evaluateDispatch(){
+    public void evaluateDispatch(){
         String currentCity = terminalRotator.getActiveTerminal();
 
         if (destinationSorter.countCityParcels(currentCity) > 0) {
@@ -98,7 +106,7 @@ public class SimulationManager {
                 parcelTracker.incrementReturnCount(parcel.getParcelID());
 
                 ParcelRecord record = parcelTracker.get(parcel.getParcelID());
-                int returnCount = record.getReturnCount();
+                int returnCount = (record != null) ? record.getReturnCount() : 0;
                 logger.logReturn(parcel, returnCount);
             }
             else {
@@ -109,44 +117,89 @@ public class SimulationManager {
         }
     }
 
-
     //returnstack reprocessing
-
-    private void reprocessReturnedParcels(int currentTick) {
+    public void reprocessReturnedParcels(int currentTick) {
         if (currentTick % reprocessInterval != 0) {
             return;
         }
         int count = 0;
 
-        while (!returnStack.isEmpty() && count < reprocessInterval) { //limit??
+        while (!returnStack.isEmpty()) {
             Parcel parcel = returnStack.pop();
-
-            destinationSorter.insertParcel(parcel);
-            parcelTracker.updateStatus(parcel.getParcelID(), Parcel.Status.Sorted, null);
-            logger.logReturn(parcel, count);
-            count++;
+            if(parcel != null){
+                destinationSorter.insertParcel(parcel);
+                parcelTracker.updateStatus(parcel.getParcelID(), Parcel.Status.Sorted, null);
+                logger.logReturn(parcel, count);
+                count++;
+            }
         }
 
     }
 
     //terminal rotation
-    private void rotateTerminal(){
-        if (currentTick % configReader.getTerminalRotationInterval() == 0) {
+    public void rotateTerminal(){
+        if (currentTick > 0 && currentTick % configReader.getTerminalRotationInterval() == 0) {
             terminalRotator.advanceTerminal();
             logger.logTerminalChange(terminalRotator.getActiveTerminal());
         }
     }
 
-
-
     //tick summary logging
-    private void logTickSummary(int currentTick) {
+    public void logTickSummary(int currentTick) {
+        System.out.println("\n--- Tick " + currentTick + " Summary ---");
+        System.out.println("  Arrival Buffer size: " + arrivalBuffer.size());
+        System.out.println("  Return Stack size: " + returnStack.size());
+        System.out.println("  Active terminal: " + terminalRotator.getActiveTerminal());
+        System.out.println("  Total Dispatched parcels: " + parcelTracker.getDispatchedCount());
+        System.out.println("  Total Returned parcels (cumulative): " + parcelTracker.getReturnedCount());
+        System.out.println("---------------------------\n");
+    }
 
-        System.out.println("Tick" + currentTick + "Summary: " );
-        System.out.println("Queue size: " + arrivalBuffer.size());
-        System.out.println("Stack size: " + returnStack.size());
-        System.out.println("Active terminal: " + terminalRotator.getActiveTerminal());
-        System.out.println("Dispatched parcels: " + parcelTracker.getDispatchedCount());
-        System.out.println("Returned parcels: " + parcelTracker.getReturnedCount());
+    public int getSimulationDuration() {
+        return configReader.getMaxTicks();
+    }
+
+    public void generateSimulationReport() {
+        this.reportGenerator.generateReport();
+    }
+
+    public void closeLoggers() {
+        this.logger.close();
+    }
+
+    // Main method: Entry point for running the simulation
+    public static void main(String[] args) {
+        SimulationManager simulation = new SimulationManager();
+        int simulationDuration = simulation.getSimulationDuration(); // Get simulation duration from config
+
+        System.out.println("Starting Parcel Sort Simulation for " + simulationDuration + " ticks.");
+
+        // Main simulation loop, runs for the configured number of ticks
+        for (simulation.currentTick = 0; simulation.currentTick < simulationDuration; simulation.currentTick++) {
+            // Log tick start (including console and file)
+            simulation.logger.logTickStart(simulation.currentTick);
+
+            // Execute simulation steps for the current tick
+            simulation.generateParcels();
+            simulation.sortParcels();
+            simulation.evaluateDispatch();
+            simulation.reprocessReturnedParcels(simulation.currentTick);
+            simulation.rotateTerminal();
+            simulation.logTickSummary(simulation.currentTick); // Print summary to console
+
+            // Optional: Add a small delay for better readability in console output
+            try {
+                Thread.sleep(50); // Sleep for 50 milliseconds
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt(); // Restore interrupted status
+                System.err.println("Simulation interrupted: " + e.getMessage());
+            }
+        }
+
+        // After the simulation loop finishes
+        System.out.println("\nSimulation Finished.");
+        simulation.generateSimulationReport(); // Generate the final report
+        simulation.closeLoggers(); // Close all loggers
+        System.out.println("Final report generated and loggers closed.");
     }
 }
