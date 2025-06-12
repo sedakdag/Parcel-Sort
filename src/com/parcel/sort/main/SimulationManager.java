@@ -86,6 +86,8 @@ public class SimulationManager {
             if(parcel != null){
                 destinationSorter.insertParcel(parcel);
                 parcelTracker.updateStatus(parcel.getParcelID(), Parcel.Status.Sorted, null);
+                //Logging the status
+                logger.logStatusChange(parcel.getParcelID(), Parcel.Status.Sorted);
                 logger.logBSTInsertion(parcel);
             }
         }
@@ -103,6 +105,8 @@ public class SimulationManager {
             if (chance < configReader.getMisroutingRate()) {
                 returnStack.push(parcel);
                 parcelTracker.updateStatus(parcel.getParcelID(), Parcel.Status.Returned, null);
+                //logging the status
+                logger.logStatusChange(parcel.getParcelID(), Parcel.Status.Returned);
                 parcelTracker.incrementReturnCount(parcel.getParcelID());
 
                 ParcelRecord record = parcelTracker.get(parcel.getParcelID());
@@ -111,6 +115,7 @@ public class SimulationManager {
             }
             else {
                 parcelTracker.updateStatus(parcel.getParcelID(), Parcel.Status.Dispatched, currentTick);
+                logger.logStatusChange(parcel.getParcelID(), Parcel.Status.Dispatched);
                 destinationSorter.removeParcel(currentCity, parcel.getParcelID());
                 logger.logDispatchSuccess(parcel, currentCity);
             }
@@ -129,6 +134,7 @@ public class SimulationManager {
             if(parcel != null){
                 destinationSorter.insertParcel(parcel);
                 parcelTracker.updateStatus(parcel.getParcelID(), Parcel.Status.Sorted, null);
+                logger.logStatusChange(parcel.getParcelID(), Parcel.Status.Sorted);
                 logger.logReturn(parcel, count);
                 count++;
             }

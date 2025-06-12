@@ -42,6 +42,13 @@ public class Logger {
         println(msg);
     }
 
+    // Logs status changes like SORTED, RETURNED, DISPATCHED
+    public void logStatusChange(String parcelID, Parcel.Status newStatus) {
+        String msg = "Status Update: Parcel " + parcelID + " -> " + newStatus;
+        println(msg);
+    }
+
+
     // Logs a successful dispatch from BST to a terminal
     public void logDispatchSuccess(Parcel parcel, String terminal) {
         String msg = "Dispatched: " + parcel.getParcelID() + " from BST to " + terminal + " -> SUCCESS";
