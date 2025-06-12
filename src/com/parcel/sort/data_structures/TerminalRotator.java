@@ -36,7 +36,8 @@ public class TerminalRotator {
         }
         prev.next = first; // complete the circle
         current = first;
-        logger.logTerminalChange("Initial Active Terminal: " + current.cityName); //log initial terminal
+        //we accidentalLy wrote this twice
+        // logger.logTerminalChange("Initial Active Terminal: " + current.cityName);
     }
 
     // advance to the next terminal
