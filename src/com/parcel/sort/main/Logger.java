@@ -74,9 +74,8 @@ public class Logger {
     }
 
     // Logs when the active terminal changes
-    public void logTerminalChange(String terminal) {
-        String msg = "Rotated to: " + terminal;
-        println(msg);
+    public void logTerminalChange(String terminalMessage) {
+        println(terminalMessage);
     }
 
     // Helper function: prints to both console and file
