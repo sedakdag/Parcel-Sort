@@ -26,11 +26,27 @@ public class DestinationSorter {
 
         public void enqueue(Parcel parcel) {
             Node newNode = new Node(parcel);
-            if (rear == null) {
-                front = rear = newNode;
+
+            // Case 1: Queue is empty or new parcel has higher priority than front
+            // (or same priority and arrived earlier)
+            if (front == null ||
+                    parcel.getPriority() > front.parcel.getPriority() ||
+                    (parcel.getPriority() == front.parcel.getPriority() && parcel.getArrivalTick() < front.parcel.getArrivalTick())) {
+                newNode.next = front;
+                front = newNode;
             } else {
-                rear.next = newNode;
-                rear = newNode;
+                // Case 2: Traverse to find the correct insertion point
+                Node current = front;
+                // Continue as long as current.next is not null AND
+                // (newParcel has lower priority than next node OR
+                //  newParcel has same priority but arrived later than next node)
+                while (current.next != null &&
+                        (parcel.getPriority() < current.next.parcel.getPriority() ||
+                                (parcel.getPriority() == current.next.parcel.getPriority() && parcel.getArrivalTick() > current.next.parcel.getArrivalTick()))) {
+                    current = current.next;
+                }
+                newNode.next = current.next;
+                current.next = newNode;
             }
             size++;
         }
@@ -186,7 +202,7 @@ public class DestinationSorter {
 
     private int calculateHeight(BSTNode node) {
         if (node == null) {
-            return 0;
+            return -1;
         }
         int leftHeight = calculateHeight(node.left);
         int rightHeight = calculateHeight(node.right);
@@ -216,7 +232,7 @@ public class DestinationSorter {
     }
 
     public String getCityWithMostParcels() {
-        CityCount max = new CityCount(null, 0);
+        CityCount max = new CityCount(null, -1);
         max = findCityWithMostParcels(root, max);
         return max.city;
     }

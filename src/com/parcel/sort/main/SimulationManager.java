@@ -103,7 +103,9 @@ public class SimulationManager {
             double chance = Math.random();
 
             if (chance < configReader.getMisroutingRate()) {
+                logger.logDispatchFailure(parcel, currentCity);
                 returnStack.push(parcel);
+                logger.logStackSize(returnStack.size());
                 parcelTracker.updateStatus(parcel.getParcelID(), Parcel.Status.Returned, null);
                 //logging the status
                 logger.logStatusChange(parcel.getParcelID(), Parcel.Status.Returned);
@@ -124,29 +126,36 @@ public class SimulationManager {
 
     //returnstack reprocessing
     public void reprocessReturnedParcels(int currentTick) {
+        // Only reprocess if current tick is a multiple of reprocessInterval
         if (currentTick % reprocessInterval != 0) {
             return;
         }
-        int count = 0;
+
+        int processedCountThisTick = 0;
 
         while (!returnStack.isEmpty()) {
             Parcel parcel = returnStack.pop();
-            if(parcel != null){
+            if (parcel != null) {
                 destinationSorter.insertParcel(parcel);
                 parcelTracker.updateStatus(parcel.getParcelID(), Parcel.Status.Sorted, null);
                 logger.logStatusChange(parcel.getParcelID(), Parcel.Status.Sorted);
-                logger.logReturn(parcel, count);
-                count++;
+
+                processedCountThisTick++; //
             }
         }
 
+        if (processedCountThisTick > 0) {
+            System.out.println("LOG: Reprocessed " + processedCountThisTick + " parcels from return stack in Tick " + currentTick + ".");
+        }
     }
 
     //terminal rotation
-    public void rotateTerminal(){
+    public void rotateTerminal() {
+        // Only rotate if currentTick is a multiple of the interval and not tick 0 (initial setup)
         if (currentTick > 0 && currentTick % configReader.getTerminalRotationInterval() == 0) {
-            terminalRotator.advanceTerminal();
-            logger.logTerminalChange(terminalRotator.getActiveTerminal());
+            terminalRotator.advanceTerminal(); // Advance to the next terminal
+
+            logger.logTerminalChange("Active terminal changed to: " + terminalRotator.getActiveTerminal());
         }
     }
 
@@ -163,6 +172,10 @@ public class SimulationManager {
 
     public int getSimulationDuration() {
         return configReader.getMaxTicks();
+    }
+
+    public ConfigReader getConfigReader() {
+        return configReader;
     }
 
     public void generateSimulationReport() {

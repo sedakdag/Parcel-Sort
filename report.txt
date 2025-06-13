@@ -2,34 +2,35 @@
 
 
 == Simulation Overview ==
-=> Total Ticks Executed:50
-=> Number of Parcels Generated:100
+=> Total Ticks Executed:20
+=> Number of Parcels Generated:37
 
 == Parcel Statistics ==
-=> Total Dispatched Parcels:37
-=> Total Returned Parcels:3
+=> Total Dispatched Parcels:13
+=> Total Returned Parcels:1
 => Number of Parcels Still in Queue/BST/Stack at End
-   >In Queue (BST): 5
-   >In Return Stack: 0
-   >Total Remaining: 5
+  > In Arrival Buffer: 0
+  > In Destination Sorter (BST City Queues): 24
+  > In Return Stack: 0
+  > Total Remaining in System: 24
 
 == Destination Metrics ==
-=> Number of Parcels per City
-   >Parcels in Ankara: 12
-   >Parcels in Istanbul: 17
-   >Parcels in Izmir: 14
-   >Parcels in Bursa: 13
-   >Parcels in Antalya: 7
-=> Most Frequently Targeted Destination:Istanbul
+=> Number of Parcels per City (currently in queues):
+  > Parcels for Istanbul  : 4
+  > Parcels for Ankara    : 2
+  > Parcels for Izmir     : 4
+  > Parcels for Bursa     : 5
+  > Parcels for Antalya   : 9
+=> Most Frequently Targeted Destination: Antalya
 
 == Timing and Delay Metrics==
-=> Average Parcel Processing Time: 17.64864864864865
-=> Parcel With Longest Delay: P115 (Delay: 32 ticks)
+=> Average Parcel Processing Time (for dispatched parcels): 4.08 ticks
+=> Parcel With Longest Delay: P101 (Delay: 11 ticks)
 => Number of Parcels Returned More Than Once: 0
 
 === Data Structure Statistics ===
-=>  Maximum Queue Size Observed: 3
-=>  Maximum Stack Size Observed: 1
-=>  Final Height of BST: 3
-=>  Hash Table Load Factor: 3.33
+=> Maximum Arrival Buffer Size Observed: 3
+=> Maximum Return Stack Size Observed: 1
+=> Final Height of BST (Destination Sorter): 3
+=> Hash Table Load Factor (Parcel Tracker): 1.23
 ==================================

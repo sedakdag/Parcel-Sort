@@ -25,8 +25,9 @@ public class Logger {
     }
 
     // Logs a new parcel arrival with ID, city, and priority
-    public void logParcelArrival(Parcel parcel){
-        String msg = "New Parcel: " + parcel.getParcelID() + " to " + parcel.getDestinationCity() + " (Priority: " + parcel.getPriority() + ")";
+    public void logParcelArrival(Parcel parcel) {
+        String msg = "New Parcel: " + parcel.getParcelID() + " to " + parcel.getDestinationCity() +
+                " (Priority: " + parcel.getPriority() + ", Size: " + parcel.getSize() + ")";
         println(msg);
     }
 
