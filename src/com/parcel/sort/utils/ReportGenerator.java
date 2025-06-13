@@ -53,37 +53,37 @@ public class ReportGenerator {
 
 
         printReportLine("=== Final Report ===");
-        printReportLine("\n== Simulation Overview ==");
+        printReportLine("\n\n== Simulation Overview ==");
         printReportLine("=> Total Ticks Executed:" + simulationManager.currentTick);
         printReportLine("=> Number of Parcels Generated:" + simulationManager.generatedParcels);
 
         printReportLine("\n== Parcel Statistics ==");
         printReportLine("=> Total Dispatched Parcels:" + dispatchedCount);
         printReportLine("=> Total Returned Parcels:" + parcelTracker.getReturnedCount());
-        printReportLine("=> Number of Parcels Still in Queue/BST/Stack at End:");
-        printReportLine(">In Queue (BST): " + destinationSorter.getNodeCount());
-        printReportLine(">In Return Stack: " + returnStack.size());
-        printReportLine(">Total Remaining: " + totalRemaining);
+        printReportLine("=> Number of Parcels Still in Queue/BST/Stack at End");
+        printReportLine("   >In Queue (BST): " + destinationSorter.getNodeCount());
+        printReportLine("   >In Return Stack: " + returnStack.size());
+        printReportLine("   >Total Remaining: " + totalRemaining);
 
         printReportLine("\n== Destination Metrics ==");
-        printReportLine("=> Number of Parcels per City:");
-        printReportLine(">Parcels in Ankara: " + destinationSorter.countCityParcels("Ankara"));
-        printReportLine(">Parcels in Istanbul: " + destinationSorter.countCityParcels("Istanbul"));
-        printReportLine(">Parcels in Izmir: " + destinationSorter.countCityParcels("Izmir"));
-        printReportLine(">Parcels in Bursa: " + destinationSorter.countCityParcels("Bursa"));
-        printReportLine(">Parcels in Antalya: " + destinationSorter.countCityParcels("Antalya"));
+        printReportLine("=> Number of Parcels per City");
+        printReportLine("   >Parcels in Ankara: " + destinationSorter.countCityParcels("Ankara"));
+        printReportLine("   >Parcels in Istanbul: " + destinationSorter.countCityParcels("Istanbul"));
+        printReportLine("   >Parcels in Izmir: " + destinationSorter.countCityParcels("Izmir"));
+        printReportLine("   >Parcels in Bursa: " + destinationSorter.countCityParcels("Bursa"));
+        printReportLine("   >Parcels in Antalya: " + destinationSorter.countCityParcels("Antalya"));
         printReportLine("=> Most Frequently Targeted Destination:" + destinationSorter.getCityWithMostParcels());
 
         printReportLine("\n== Timing and Delay Metrics==");
-        printReportLine("=> Average Parcel Processing Time:" + parcelTracker.getAverageProcessingTime());
+        printReportLine("=> Average Parcel Processing Time: " + parcelTracker.getAverageProcessingTime());
         printReportLine("=> Parcel With Longest Delay: " + (longestDelayParcel != null ? longestDelayParcel.getParcelID() + " (Delay: " + (longestDelayParcel.getDispatchTime() - longestDelayParcel.getArrivalTime()) + " ticks)" : "N/A"));
         printReportLine("=> Number of Parcels Returned More Than Once: " + parcelsReturnedMoreThanOnce);
 
         printReportLine("\n=== Data Structure Statistics ===");
         printReportLine("=>  Maximum Queue Size Observed: " + arrivalBuffer.getMaxSize());
         printReportLine("=>  Maximum Stack Size Observed: " + returnStack.getMaxSize());
-        printReportLine("=>  Final Height of BST" + destinationSorter.getHeight());
-        printReportLine("=>  Hash Table Load Factor" + String.format("%.2f", loadFactor));
+        printReportLine("=>  Final Height of BST: " + destinationSorter.getHeight());
+        printReportLine("=>  Hash Table Load Factor: " + String.format("%.2f", loadFactor));
         printReportLine("==================================");
 
         // close the report writer to ensure all content is written to the file

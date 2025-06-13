@@ -185,13 +185,12 @@ public class DestinationSorter {
     }
 
     private int calculateHeight(BSTNode node) {
-        int h = 0;
-        while (node != null) {
-            if (node.left != null) {
-                h += 1 + calculateHeight(node.left);
-            }
+        if (node == null) {
+            return 0;
         }
-        return h;
+        int leftHeight = calculateHeight(node.left);
+        int rightHeight = calculateHeight(node.right);
+        return 1 + Math.max(leftHeight, rightHeight);
     }
 
     private class CityCount {
