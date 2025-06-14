@@ -1,7 +1,7 @@
 package com.parcel.sort.data_structures;
 import com.parcel.sort.entities.Parcel;
 import com.parcel.sort.model.ParcelRecord;
-//tek tek anlayıp açıklayacağım relax takıl babaaaa
+
 public class ParcelTracker {
     private static class Node{
         String key;
